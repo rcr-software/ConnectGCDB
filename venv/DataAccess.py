@@ -1,29 +1,26 @@
 import mysql.connector
 
-def ConnectToDatabase(host, db, user, passwd):
+def ConnectToDatabase(host):
     db = mysql.connector.connect(
             host=host,
-            db=db,
-            user=user,
-            passwd=passwd
+            db="GCDB",
+            user="webuser",
+            passwd="password"
         )
 
     return db
 
 def TestConnection(con):
-    try:
-        cursor = con.cursor()
 
-        cursor.execute("SELECT VERSION()")
+    cursor = con.cursor()
 
-        results = cursor.fetchone()
+    cursor.execute("SELECT VERSION()")
 
-        if results:
-            return True
-        else:
-            return False
-    except:
-        print("Connection Error")
+    results = cursor.fetchone()
+
+    if results:
+        return True
+    else:
         return False
 
 
@@ -35,11 +32,8 @@ def ExecQuery(con, query):
 
     cursor.execute(query)
 
-    try:
-        for x in cursor:
-           print(x)
-    except:
-        print('Query returned 0 results')
+    for x in cursor:
+        print(x)
 
 def GetLaunchID(con, desc):
     dbCursor = con.cursor()
@@ -86,13 +80,8 @@ def InsertIntoTelemetryVehicle(con, launchID, velocity, GPSx, GPSy, altitude, vo
     dbCursor.execute(sqlString)
     con.commit()
 
-
 def Main():
     IP = "192.168.0.101"
-    DB = "GCDB"
-    USER = "webuser"
-    PASS = "password"
-
     LAUNCH_ID = 0
 
     print("River City Rocketry");
@@ -106,13 +95,15 @@ def Main():
         print("2) Get Connection Variables")
         print("3) Test Database Connection")
         print("4) Query Database")
-        print("5) Start New Launch")
+        print("5) New Launch")
         print("6) Load Launch")
+        print("t) Execute Test Function")
         print("0) Exit")
 
         user_in = input("Option: ")
-
-        if(user_in == "1"):
+        if(user_in == "t"):
+            testfxn()
+        elif(user_in == "1"):
             option = input("Use Default Connection?(y/n): ")
             if(option.upper() == "Y"):
                 IP = "192.168.0.101"
@@ -121,13 +112,13 @@ def Main():
                 IP = user_ip
         elif(user_in == "2"):
             print("\nHost: "+IP)
-            print("Database: "+DB)
-            print("User: "+USER)
+            print("Database: GCDB")
+            print("User: webuser")
 
             print("\nLaunch ID: "+str(LAUNCH_ID))
 
         elif(user_in == "3"):
-            test = TestConnection(ConnectToDatabase(IP, DB, USER, PASS))
+            test = TestConnection(ConnectToDatabase(IP))
 
             if(test == True):
                 print("\nConnection Succeeded")
@@ -136,50 +127,43 @@ def Main():
         elif(user_in == "4"):
             q = input("db> ")
 
-            db = ConnectToDatabase(IP, DB, USER, PASS)
+            db = ConnectToDatabase(IP)
 
             ExecQuery(db, q)
         elif(user_in == "5"):
             desc = input("Launch Description: ")
 
-            db = ConnectToDatabase(IP, DB, USER, PASS)
+            db = ConnectToDatabase(IP)
             LAUNCH_ID = InstertIntoLaunch(db, "NULL", "NULL", desc)
         elif(user_in == "6"):
-            db = ConnectToDatabase(IP, DB, USER, PASS)
+            db = ConnectToDatabase(IP)
 
             LAUNCH_ID = LoadLaunchID(db)
 
 def testfxn():
     IP = "192.168.1.126"
-    DB = "GCDB"
-    USER = "webuser"
-    PASS = "password"
+    LAUNCH_ID = 0
 
-    LAUNCH_ID = 1
+    print("New Launch")
 
-    db = ConnectToDatabase(IP, DB, USER, PASS)
+    db = ConnectToDatabase(IP)
 
-    #LaunchID = InstertIntoLaunch(db, "NULL", "NULL", "Insertion via Python")
-    #db.commit()
+    desc = input("Launch Description: ")
+    LAUNCH_ID = InstertIntoLaunch(db, "NULL", "NULL", desc)
+    print("LAUNCH_ID: "+str(LAUNCH_ID))
 
+    #Insert Dummy Data
     InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
+    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
+    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
+    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
+    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
+
     InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
     InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
     InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
     InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
-    InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
-    InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
-    InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
-    InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
-    InsertIntoTelemetryNosecone(db, LAUNCH_ID, "0.0", "0.0", "0.0")
     InsertIntoTelemetryVehicle(db, LAUNCH_ID, "0.0", "0.0", "0.0", "0.0", "0.0", "0.0")
 
-#Main()
+Main()
 #testfxn()
