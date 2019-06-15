@@ -66,15 +66,15 @@ def InstertIntoLaunch(con, separation, end, desc):
 
     return LaunchID
 
-def InsertIntoTelemetryNosecone(con, launchID, GPSx, GPSy, altitude):
-    sqlString = "CALL usp_AddTelemetry_Nosecone( "+str(launchID)+", "+GPSx+", "+GPSy+", "+altitude+")"
+def InsertIntoTelemetryNosecone(con, launchID, time_of_transmission, altitude, gps_altitude, gps_speed, GPSx, GPSy, battery, temp, separation, signalStrength):
+    sqlString = "CALL usp_AddTelemetry_Nosecone( "+str(launchID)+", "+time_of_transmission+", "+altitude+", "+gps_altitude+", "+gps_speed+", "+GPSx+", "+GPSy+", "+battery+", "+temp+", "+separation+", "+signalStrength+")"
 
     dbCursor = con.cursor()
     dbCursor.execute(sqlString)
     con.commit()
 
-def InsertIntoTelemetryVehicle(con, launchID, velocity, GPSx, GPSy, altitude, voltage, temp):
-    sqlString = "CALL usp_AddTelemetry_Vehicle( "+str(launchID)+", "+velocity+", "+GPSx+", "+GPSy+", "+altitude+", "+voltage+", "+temp+")"
+def InsertIntoTelemetryVehicle(con, launchID, time_of_transmission, altitude, speed, acceleration, GPSx, GPSy, voltage, temp, separation, signalStrength):
+    sqlString = "CALL usp_AddTelemetry_Vehicle( "+str(launchID)+", "+time_of_transmission+", "+altitude+", "+speed+", "+acceleration+", "+GPSx+", "+GPSy+", "+voltage+", "+temp+", "+separation+", "+signalStrength+")"
 
     dbCursor = con.cursor()
     dbCursor.execute(sqlString)
