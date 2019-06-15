@@ -81,7 +81,7 @@ def InsertIntoTelemetryVehicle(con, launchID, time_of_transmission, altitude, sp
     con.commit()
 
 def Main():
-    IP = "192.168.0.101"
+    IP = "127.0.0.1"
     LAUNCH_ID = 0
 
     print("River City Rocketry");
@@ -106,7 +106,7 @@ def Main():
         elif(user_in == "1"):
             option = input("Use Default Connection?(y/n): ")
             if(option.upper() == "Y"):
-                IP = "192.168.0.101"
+                IP = "127.0.0.1"
             else:
                 user_ip = input("Host IP: ")
                 IP = user_ip
